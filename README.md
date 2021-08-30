@@ -9,3 +9,8 @@
 OR
 
 `./start-docker.sh` - if you don't. (requires Docker to be installed)
+
+
+## Used sources
+
+[SOURCES.md](./SOURCES.md)
