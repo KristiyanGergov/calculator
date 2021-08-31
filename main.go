@@ -1,32 +1,28 @@
 package main
 
 import (
-	"net/http"
-	"os"
-
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"calculator_assignment/calculate"
+	"calculator_assignment/parser"
+	"calculator_assignment/reader"
+	"fmt"
 )
 
 func main() {
-
-	e := echo.New()
-
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
-	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, "Hello, Docker! <3")
-	})
-
-	e.GET("/ping", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
-	})
-
-	httpPort := os.Getenv("HTTP_PORT")
-	if httpPort == "" {
-		httpPort = "8080"
+	expression, err := reader.ReadExpression()
+	for err != nil {
+		fmt.Println("couldn't read your input. please, try again")
+		expression, err = reader.ReadExpression()
 	}
 
-	e.Logger.Fatal(e.Start(":" + httpPort))
+	parsedExpression, err := parser.ParseExpression(expression)
+	if err != nil {
+		fmt.Println("you have entered invalid input. please, try again. cause:", err)
+	}
+
+	result, err := calculate.Expression(parsedExpression)
+	if err != nil {
+		fmt.Println("expression could not be calculated. please, try again. cause:", err)
+	}
+
+	fmt.Printf("Expression: %s = %v", expression, result)
 }
