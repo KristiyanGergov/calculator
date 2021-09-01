@@ -1,7 +1,7 @@
 package reader
 
 type Reader interface {
-	ReadExpression() (string, error)
+	ReadExpression() ([]string, error)
 }
 
 type ConsoleReader struct{}
@@ -10,6 +10,6 @@ func NewConsoleReader() *ConsoleReader {
 	return &ConsoleReader{}
 }
 
-func (*ConsoleReader) ReadExpression() (string, error) {
-	return "mocked response", nil
+func (*ConsoleReader) ReadExpression() ([]string, error) {
+	return []string{"5", "/", "2", "-", "3"}, nil
 }
