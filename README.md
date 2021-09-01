@@ -1,14 +1,22 @@
 # Calculator
 
+## Description
+
+This is a simple calculator which can be used  to do basic operators like addition, subtraction, multiplication and division.
+
+- Tech stack
+    - Go
+    - Docker
+
 ## Developer setup
 
-### Running the server
+### Running the app
 
-`./start-go.sh` - if you have go installed on your local machine
+`./start-go.sh` - if you have `Go` installed on your local machine
  
 OR
 
-`./start-docker.sh` - if you don't. (requires Docker to be installed)
+`./start-docker.sh` - if you don't. (requires `Docker` to be installed)
 
 ## Documentation
 
