@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"regexp"
 	"strconv"
 )
 
@@ -30,20 +29,20 @@ var priorities = map[OperatorType]int{
 	Divide:   1,
 }
 
-var isTokenAnOperandPattern = "^[0-9]+$"          // Matches only numbers
-var isTokenAnOperatorPattern = "^[\\*\\+\\-\\/]$" // Matches only the characters * / - +
-
 func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 	var tokens []Token
 	var err error
 	operators := newStack()
 
 	for _, currentToken := range expression {
-		tokenIsAnOperand, _ := regexp.MatchString(isTokenAnOperandPattern, currentToken)
-		tokenIsAnOperator, _ := regexp.MatchString(isTokenAnOperatorPattern, currentToken)
+		operand, tokenIsAnOperand := parseTokenIntoOperand(currentToken)
+		_, tokenIsAnOperator := mapStringToOperatorType[currentToken]
 
 		if tokenIsAnOperand {
-			tokens = handleOperandToken(currentToken, tokens)
+			tokens = append(tokens, Token{
+				Type:  Operand,
+				Value: operand,
+			})
 		} else if tokenIsAnOperator {
 			tokens, operators, err = handleOperatorToken(currentToken, tokens, operators)
 
@@ -65,13 +64,12 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 	return tokens, nil
 }
 
-func handleOperandToken(token string, tokens []Token) []Token {
-	value, _ := strconv.Atoi(token)
-
-	return append(tokens, Token{
-		Type:  Operand,
-		Value: value,
-	})
+func parseTokenIntoOperand(token string) (int, bool) {
+	value, err := strconv.Atoi(token)
+	if err != nil {
+		return 0, false
+	}
+	return value, true
 }
 
 func handleOperatorToken(token string, tokens []Token, operators *stack) ([]Token, *stack, error) {
