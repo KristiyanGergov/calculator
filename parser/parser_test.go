@@ -66,6 +66,14 @@ func TestExpressionParser_Expression(t *testing.T) {
 			want:    nil,
 			wantErr: fmt.Errorf("invalid input. the character & is not valid"),
 		},
+		{
+			name: "Invalid expression",
+			args: args{
+				expression: []string{"5"},
+			},
+			want:    nil,
+			wantErr: fmt.Errorf("the expression must contain at least two operands and one operator"),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -56,6 +56,10 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 		})
 	}
 
+	if len(tokens) < 3 {
+		return nil, fmt.Errorf("the expression must contain at least two operands and one operator")
+	}
+
 	return tokens, nil
 }
 
