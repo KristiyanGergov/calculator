@@ -1,9 +1,5 @@
 package parser
 
-import (
-	"fmt"
-)
-
 type stack struct {
 	s []OperatorType
 }
@@ -16,24 +12,17 @@ func (s *stack) push(v OperatorType) {
 	s.s = append(s.s, v)
 }
 
-func (s *stack) pop() (OperatorType, error) {
+func (s *stack) pop() OperatorType {
 	l := len(s.s)
-	if l == 0 {
-		return -1, fmt.Errorf("empty stack")
-	}
 
 	res := s.s[l-1]
 	s.s = s.s[:l-1]
-	return res, nil
+	return res
 }
 
-func (s *stack) peek() (OperatorType, error) {
+func (s *stack) peek() OperatorType {
 	l := len(s.s)
-	if l == 0 {
-		return -1, fmt.Errorf("empty stack")
-	}
-
-	return s.s[l-1], nil
+	return s.s[l-1]
 }
 
 func (s *stack) size() int {

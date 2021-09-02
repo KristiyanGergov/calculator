@@ -53,26 +53,22 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 			if !ok {
 				return nil, fmt.Errorf("unknown operator: %s", currentToken)
 			}
+			previousOperator := operators.peek()
+
+			if operators.size() == 0 {
+				operators.push(operator)
+				continue
+			}
 
 			priority := priorities[operator]
+			previousPriority := priorities[previousOperator]
 
-			for operators.size() > 0 {
-				previousOperator, err := operators.peek()
-				if err != nil {
-					return nil, fmt.Errorf("stack was corrupted")
-				}
-
-				previousPriority := priorities[previousOperator]
-
-				if priority <= previousPriority {
-					operators.pop()
-					tokens = append(tokens, Token{
-						Type:  Operator,
-						Value: previousOperator,
-					})
-				} else {
-					break
-				}
+			for operators.size() > 0 && priority <= previousPriority {
+				operators.pop()
+				tokens = append(tokens, Token{
+					Type:  Operator,
+					Value: previousOperator,
+				})
 			}
 
 			operators.push(operator)
@@ -82,7 +78,7 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 	}
 
 	for operators.size() > 0 {
-		operator, _ := operators.pop()
+		operator := operators.pop()
 		tokens = append(tokens, Token{
 			Type:  Operator,
 			Value: operator,
@@ -90,25 +86,4 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 	}
 
 	return tokens, nil
-}
-
-type TokenType int
-
-const (
-	Operand TokenType = iota
-	Operator
-)
-
-type OperatorType int
-
-const (
-	Multiply OperatorType = iota
-	Subtract
-	Divide
-	Add
-)
-
-type Token struct {
-	Type  TokenType
-	Value interface{}
 }
