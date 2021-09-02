@@ -31,7 +31,7 @@ var priorities = map[OperatorType]int{
 
 func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 	var tokens []Token
-	operators := newStack()
+	operators := NewStack()
 
 	for _, currentToken := range expression {
 		operand, tokenIsAnOperand := parseTokenIntoOperand(currentToken)
@@ -49,10 +49,10 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 		}
 	}
 
-	for operators.size() > 0 {
+	for operators.Size() > 0 {
 		tokens = append(tokens, Token{
 			Type:  Operator,
-			Value: operators.pop(),
+			Value: operators.Pop(),
 		})
 	}
 
@@ -71,27 +71,27 @@ func parseTokenIntoOperand(token string) (int, bool) {
 	return value, true
 }
 
-func handleOperatorToken(token string, tokens []Token, operators *stack) ([]Token, *stack) {
+func handleOperatorToken(token string, tokens []Token, operators *Stack) ([]Token, *Stack) {
 	operator := mapStringToOperatorType[token]
 
-	if operators.size() == 0 {
-		operators.push(operator)
+	if operators.Size() == 0 {
+		operators.Push(operator)
 		return tokens, operators
 	}
 
-	previousOperator := operators.peek()
+	previousOperator := operators.Peek()
 	priority := priorities[operator]
 	previousPriority := priorities[previousOperator]
 
-	for operators.size() > 0 && priority <= previousPriority {
-		operators.pop()
+	for operators.Size() > 0 && priority <= previousPriority {
+		operators.Pop()
 		tokens = append(tokens, Token{
 			Type:  Operator,
 			Value: previousOperator,
 		})
 	}
 
-	operators.push(operator)
+	operators.Push(operator)
 
 	return tokens, operators
 }

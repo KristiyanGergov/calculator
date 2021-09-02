@@ -1,18 +1,18 @@
 package parser
 
-type stack struct {
+type Stack struct {
 	s []OperatorType
 }
 
-func newStack() *stack {
-	return &stack{make([]OperatorType, 0)}
+func NewStack() *Stack {
+	return &Stack{make([]OperatorType, 0)}
 }
 
-func (s *stack) push(v OperatorType) {
+func (s *Stack) Push(v OperatorType) {
 	s.s = append(s.s, v)
 }
 
-func (s *stack) pop() OperatorType {
+func (s *Stack) Pop() OperatorType {
 	l := len(s.s)
 
 	res := s.s[l-1]
@@ -20,11 +20,11 @@ func (s *stack) pop() OperatorType {
 	return res
 }
 
-func (s *stack) peek() OperatorType {
+func (s *Stack) Peek() OperatorType {
 	l := len(s.s)
 	return s.s[l-1]
 }
 
-func (s *stack) size() int {
+func (s *Stack) Size() int {
 	return len(s.s)
 }

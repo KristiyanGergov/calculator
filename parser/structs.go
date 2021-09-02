@@ -1,9 +1,9 @@
 package parser
 
-type TokenType int
+type tokenType int
 
 const (
-	Operand TokenType = iota
+	Operand tokenType = iota
 	Operator
 )
 
@@ -17,6 +17,6 @@ const (
 )
 
 type Token struct {
-	Type  TokenType
+	Type  tokenType
 	Value interface{}
 }
