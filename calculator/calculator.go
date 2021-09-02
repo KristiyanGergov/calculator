@@ -1,7 +1,9 @@
 package calculator
 
+import "calculator_assignment/parser"
+
 type Calculator interface {
-	Expression(string) (float64, error)
+	Expression([]parser.Token) (float64, error)
 }
 
 type ExpressionCalculator struct{}
@@ -10,6 +12,6 @@ func NewExpressionCalculator() *ExpressionCalculator {
 	return &ExpressionCalculator{}
 }
 
-func (*ExpressionCalculator) Expression(expression string) (float64, error) {
+func (*ExpressionCalculator) Expression(expression []parser.Token) (float64, error) {
 	return 0.0, nil
 }

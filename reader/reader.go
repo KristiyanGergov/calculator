@@ -11,5 +11,5 @@ func NewConsoleReader() *ConsoleReader {
 }
 
 func (*ConsoleReader) ReadExpression() ([]string, error) {
-	return []string{"5", "/", "2", "-", "3"}, nil
+	return []string{"5", "/", "2", "*", "3"}, nil
 }
