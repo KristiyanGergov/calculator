@@ -1,8 +1,8 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/require"
-	"reflect"
 	"testing"
 )
 
@@ -14,53 +14,65 @@ func TestExpressionParser_Expression(t *testing.T) {
 		name    string
 		args    args
 		want    []Token
-		wantErr bool
+		wantErr error
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Parsing expression with two consecutive operators with the same priority",
+			args: args{
+				expression: []string{"5", "/", "2", "*", "3"},
+			},
+			want: []Token{
+				{Type: Operand, Value: 5},
+				{Type: Operand, Value: 2},
+				{Type: Operator, Value: Divide},
+				{Type: Operand, Value: 3},
+				{Type: Operator, Value: Multiply},
+			},
+			wantErr: nil,
+		},
+		{
+			name: "Parsing expression with two consecutive operators where the first is with higher priority",
+			args: args{
+				expression: []string{"5", "/", "2", "+", "3"},
+			},
+			want: []Token{
+				{Type: Operand, Value: 5},
+				{Type: Operand, Value: 2},
+				{Type: Operator, Value: Divide},
+				{Type: Operand, Value: 3},
+				{Type: Operator, Value: Add},
+			},
+			wantErr: nil,
+		},
+		{
+			name: "Parsing expression with two consecutive operators where the second is with higher priority",
+			args: args{
+				expression: []string{"5", "+", "2", "/", "3"},
+			},
+			want: []Token{
+				{Type: Operand, Value: 5},
+				{Type: Operand, Value: 2},
+				{Type: Operand, Value: 3},
+				{Type: Operator, Value: Divide},
+				{Type: Operator, Value: Add},
+			},
+			wantErr: nil,
+		},
+		{
+			name: "Invalid operator passed",
+			args: args{
+				expression: []string{"5", "&", "2", "/", "3"},
+			},
+			want:    nil,
+			wantErr: fmt.Errorf("invalid input. the character & is not valid"),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ex := &ExpressionParser{}
 			got, err := ex.Expression(tt.args.expression)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Expression() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Expression() got = %v, wantOperand %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_handleOperatorToken(t *testing.T) {
-	type args struct {
-		token     string
-		tokens    []Token
-		operators *stack
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    []Token
-		want1   *stack
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, got1, err := handleOperatorToken(tt.args.token, tt.args.tokens, tt.args.operators)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("handleOperatorToken() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("handleOperatorToken() got = %v, wantOperand %v", got, tt.want)
-			}
-			if !reflect.DeepEqual(got1, tt.want1) {
-				t.Errorf("handleOperatorToken() got1 = %v, wantOperand %v", got1, tt.want1)
-			}
+			require.Equal(t, tt.wantErr, err)
+			require.Equal(t, tt.want, got)
 		})
 	}
 }

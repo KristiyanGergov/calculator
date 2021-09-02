@@ -31,7 +31,6 @@ var priorities = map[OperatorType]int{
 
 func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 	var tokens []Token
-	var err error
 	operators := newStack()
 
 	for _, currentToken := range expression {
@@ -44,13 +43,9 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 				Value: operand,
 			})
 		} else if tokenIsAnOperator {
-			tokens, operators, err = handleOperatorToken(currentToken, tokens, operators)
-
-			if err != nil {
-				return nil, err
-			}
+			tokens, operators = handleOperatorToken(currentToken, tokens, operators)
 		} else {
-			return nil, fmt.Errorf("invalid input")
+			return nil, fmt.Errorf("invalid input. the character %s is not valid", currentToken)
 		}
 	}
 
@@ -72,15 +67,12 @@ func parseTokenIntoOperand(token string) (int, bool) {
 	return value, true
 }
 
-func handleOperatorToken(token string, tokens []Token, operators *stack) ([]Token, *stack, error) {
-	operator, ok := mapStringToOperatorType[token]
-	if !ok {
-		return nil, nil, fmt.Errorf("unknown operator: %s", token)
-	}
+func handleOperatorToken(token string, tokens []Token, operators *stack) ([]Token, *stack) {
+	operator := mapStringToOperatorType[token]
 
 	if operators.size() == 0 {
 		operators.push(operator)
-		return tokens, operators, nil
+		return tokens, operators
 	}
 
 	previousOperator := operators.peek()
@@ -97,5 +89,5 @@ func handleOperatorToken(token string, tokens []Token, operators *stack) ([]Toke
 
 	operators.push(operator)
 
-	return tokens, operators, nil
+	return tokens, operators
 }
