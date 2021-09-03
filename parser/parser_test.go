@@ -22,10 +22,10 @@ func TestExpressionParser_Expression(t *testing.T) {
 				expression: []string{"5", "/", "2", "*", "3"},
 			},
 			want: []Token{
-				{Type: Operand, Value: 5},
-				{Type: Operand, Value: 2},
+				{Type: Operand, Value: 5.0},
+				{Type: Operand, Value: 2.0},
 				{Type: Operator, Value: Divide},
-				{Type: Operand, Value: 3},
+				{Type: Operand, Value: 3.0},
 				{Type: Operator, Value: Multiply},
 			},
 			wantErr: nil,
@@ -36,10 +36,10 @@ func TestExpressionParser_Expression(t *testing.T) {
 				expression: []string{"5", "/", "2", "+", "3"},
 			},
 			want: []Token{
-				{Type: Operand, Value: 5},
-				{Type: Operand, Value: 2},
+				{Type: Operand, Value: 5.0},
+				{Type: Operand, Value: 2.0},
 				{Type: Operator, Value: Divide},
-				{Type: Operand, Value: 3},
+				{Type: Operand, Value: 3.0},
 				{Type: Operator, Value: Add},
 			},
 			wantErr: nil,
@@ -50,9 +50,9 @@ func TestExpressionParser_Expression(t *testing.T) {
 				expression: []string{"5", "+", "2", "/", "3"},
 			},
 			want: []Token{
-				{Type: Operand, Value: 5},
-				{Type: Operand, Value: 2},
-				{Type: Operand, Value: 3},
+				{Type: Operand, Value: 5.0},
+				{Type: Operand, Value: 2.0},
+				{Type: Operand, Value: 3.0},
 				{Type: Operator, Value: Divide},
 				{Type: Operator, Value: Add},
 			},
@@ -92,15 +92,15 @@ func Test_parseTokenIntoOperand(t *testing.T) {
 	tests := []struct {
 		name                 string
 		args                 args
-		wantOperand          int
+		wantOperand          float64
 		wantTokenIsAnOperand bool
 	}{
 		{
-			name: "Token is an integer",
+			name: "Token is a float",
 			args: args{
-				token: "5123",
+				token: "5123.12",
 			},
-			wantOperand:          5123,
+			wantOperand:          5123.12,
 			wantTokenIsAnOperand: true,
 		},
 		{
