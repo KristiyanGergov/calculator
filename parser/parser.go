@@ -63,8 +63,8 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 	return tokens, nil
 }
 
-func parseTokenIntoOperand(token string) (int, bool) {
-	value, err := strconv.Atoi(token)
+func parseTokenIntoOperand(token string) (float64, bool) {
+	value, err := strconv.ParseFloat(token, 64)
 	if err != nil {
 		return 0, false
 	}

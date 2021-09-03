@@ -15,28 +15,28 @@ func NewExpressionCalculator() *ExpressionCalculator {
 	return &ExpressionCalculator{}
 }
 
-var operatorCalculation = map[parser.OperatorType]func(int, int) (int, error){
-	parser.Add: func(a int, b int) (int, error) { return a + b, nil },
-	parser.Divide: func(a int, b int) (int, error) {
+var operatorCalculation = map[parser.OperatorType]func(float64, float64) (float64, error){
+	parser.Add: func(a float64, b float64) (float64, error) { return a + b, nil },
+	parser.Divide: func(a float64, b float64) (float64, error) {
 		if b == 0 {
 			return 0, fmt.Errorf("division with 0 is impossible")
 		}
 		return a / b, nil
 	},
-	parser.Subtract: func(a int, b int) (int, error) { return a - b, nil },
-	parser.Multiply: func(a int, b int) (int, error) { return a * b, nil },
+	parser.Subtract: func(a float64, b float64) (float64, error) { return a - b, nil },
+	parser.Multiply: func(a float64, b float64) (float64, error) { return a * b, nil },
 }
 
 func (*ExpressionCalculator) Expression(expression []parser.Token) (float64, error) {
-	var stack []int
+	var calculations []float64
 
 	for _, token := range expression {
 		if token.Type == parser.Operand {
-			val := token.Value.(int)
-			stack = append(stack, val)
+			val := token.Value.(float64)
+			calculations = append(calculations, val)
 		} else {
-			a, b := stack[len(stack)-2], stack[len(stack)-1]
-			stack = stack[:len(stack)-2]
+			a, b := calculations[len(calculations)-2], calculations[len(calculations)-1]
+			calculations = calculations[:len(calculations)-2]
 
 			operatorType := token.Value.(parser.OperatorType)
 
@@ -45,9 +45,9 @@ func (*ExpressionCalculator) Expression(expression []parser.Token) (float64, err
 				return 0.0, err
 			}
 
-			stack = append(stack, res)
+			calculations = append(calculations, res)
 		}
 	}
 
-	return float64(stack[len(stack)-1]), nil
+	return calculations[len(calculations)-1], nil
 }
