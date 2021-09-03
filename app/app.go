@@ -22,11 +22,7 @@ func New(reader reader.Reader, parser parser.Parser, calculator calculator.Calcu
 }
 
 func (app *App) Start() {
-	expression, err := app.reader.ReadExpression()
-	for err != nil {
-		fmt.Println("couldn't read your input. please, try again")
-		expression, err = app.reader.ReadExpression()
-	}
+	expression := app.reader.ReadExpression()
 
 	parsedExpression, err := app.parser.Expression(expression)
 	if err != nil {
