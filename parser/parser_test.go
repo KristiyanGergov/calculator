@@ -67,12 +67,52 @@ func TestExpressionParser_Expression(t *testing.T) {
 			wantErr: fmt.Errorf("invalid input. the character & is not valid"),
 		},
 		{
-			name: "Invalid expression",
+			name: "Invalid expression only one operand and no operators",
 			args: args{
 				expression: []string{"5"},
 			},
 			want:    nil,
 			wantErr: fmt.Errorf("the expression must contain at least two operands and one operator"),
+		},
+		{
+			name: "Invalid expression more operators",
+			args: args{
+				expression: []string{"5", "/", "2", "/"},
+			},
+			want:    nil,
+			wantErr: fmt.Errorf("each two operands should have exactly one operator"),
+		},
+		{
+			name: "Invalid expression wrong order of operators and operands",
+			args: args{
+				expression: []string{"5", "/", "/", "2", "3"},
+			},
+			want:    nil,
+			wantErr: fmt.Errorf("each expression should start and end with operand and each operator should be followed by an operand"),
+		},
+		{
+			name: "Invalid expression missing operators",
+			args: args{
+				expression: []string{"5", "2", "3"},
+			},
+			want:    nil,
+			wantErr: fmt.Errorf("each expression should start and end with operand and each operand should be followed by an operator"),
+		},
+		{
+			name: "Invalid expression starting with an operator",
+			args: args{
+				expression: []string{"/", "2", "3"},
+			},
+			want:    nil,
+			wantErr: fmt.Errorf("each expression should start and end with operand and each operator should be followed by an operand"),
+		},
+		{
+			name: "Invalid expression ending with an operator",
+			args: args{
+				expression: []string{"2", "/", "/"},
+			},
+			want:    nil,
+			wantErr: fmt.Errorf("each expression should start and end with operand and each operator should be followed by an operand"),
 		},
 	}
 	for _, tt := range tests {

@@ -33,16 +33,39 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 	var tokens []Token
 	operators := NewStack()
 
+	expressionSize := len(expression)
+
+	if expressionSize%2 == 0 {
+		return nil, fmt.Errorf("each two operands should have exactly one operator")
+	}
+
+	if expressionSize < 3 {
+		return nil, fmt.Errorf("the expression must contain at least two operands and one operator")
+	}
+
+	// We should always start with an operand
+	nextTokenShouldBeOperand := true
+
 	for _, currentToken := range expression {
 		operand, tokenIsAnOperand := parseTokenIntoOperand(currentToken)
 		_, tokenIsAnOperator := mapStringToOperatorType[currentToken]
 
 		if tokenIsAnOperand {
+			if !nextTokenShouldBeOperand {
+				return nil, fmt.Errorf("each expression should start and end with operand and each operand should be followed by an operator")
+			}
+
+			nextTokenShouldBeOperand = false
 			tokens = append(tokens, Token{
 				Type:  Operand,
 				Value: operand,
 			})
 		} else if tokenIsAnOperator {
+			if nextTokenShouldBeOperand {
+				return nil, fmt.Errorf("each expression should start and end with operand and each operator should be followed by an operand")
+			}
+
+			nextTokenShouldBeOperand = true
 			tokens, operators = handleOperatorToken(currentToken, tokens, operators)
 		} else {
 			return nil, fmt.Errorf("invalid input. the character %s is not valid", currentToken)
@@ -54,10 +77,6 @@ func (*ExpressionParser) Expression(expression []string) ([]Token, error) {
 			Type:  Operator,
 			Value: operators.Pop(),
 		})
-	}
-
-	if len(tokens) < 3 {
-		return nil, fmt.Errorf("the expression must contain at least two operands and one operator")
 	}
 
 	return tokens, nil
