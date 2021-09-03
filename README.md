@@ -14,6 +14,10 @@ This is a simple calculator which can be used  to do basic operators like additi
 Running the app locally requires having go installed. The app currently uses `go 1.6`.
 
 `./start-go.sh`
+
+### Tests
+
+`./start-test.sh`
  
 ## Documentation
 
