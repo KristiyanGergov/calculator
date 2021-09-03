@@ -21,18 +21,19 @@ func New(reader reader.Reader, parser parser.Parser, calculator calculator.Calcu
 	}
 }
 
-func (app *App) Start() {
+func (app *App) Start() string {
+	fmt.Printf("Enter the expression to be calculated: ")
 	expression := app.reader.ReadExpression()
 
 	parsedExpression, err := app.parser.Expression(expression)
 	if err != nil {
-		fmt.Println("you have entered invalid input. please, try again. cause:", err)
+		return fmt.Sprintf("you have entered invalid input. please, try again. cause: %s", err)
 	}
 
 	result, err := app.calculator.Expression(parsedExpression)
 	if err != nil {
-		fmt.Println("expression could not be calculated. please, try again. cause:", err)
+		return fmt.Sprintf("expression could not be calculated. please, try again. cause: %s", err)
 	}
 
-	fmt.Printf("Expression: %s = %v", expression, result)
+	return fmt.Sprintf("Expression: %s = %v", expression, result)
 }

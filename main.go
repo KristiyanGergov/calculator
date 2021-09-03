@@ -6,6 +6,7 @@ import (
 	"calculator_assignment/calculator"
 	"calculator_assignment/parser"
 	"calculator_assignment/reader"
+	"fmt"
 	"os"
 )
 
@@ -14,5 +15,6 @@ func main() {
 	expressionParser := parser.NewExpressionParser()
 	expressionCalculator := calculator.NewExpressionCalculator()
 
-	app.New(consoleReader, expressionParser, expressionCalculator).Start()
+	app := app.New(consoleReader, expressionParser, expressionCalculator)
+	fmt.Println(app.Start())
 }
